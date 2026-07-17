@@ -1,11 +1,31 @@
 // to create a server
 
 const express = require("express") 
+const noteModel = require(".models/note.model")
 
 const app = express()
 
 app.use(express.json())
 
+
+/*
+POST /notes = Create a note
+GET /notes = Get all notes
+DELETE /notes/:id = Delte a note
+PATCH /notes/:id = Update a note
+*/
+
+app.post("notes",(req,res)=>{
+
+    const data = req.body  // title + description
+    await noteModel.create({
+        title : data.title,
+        description : data.description
+    })
+    res.status(201).json({
+        message : "Note created"
+    })
+})
 
 /*
 
@@ -70,6 +90,6 @@ app.patch('/notes/:index',(req,res)=>{
     res.status(200).json({
         message : "note updated succesfully"
     })
-})
+})*/
 
 module.exports = app
