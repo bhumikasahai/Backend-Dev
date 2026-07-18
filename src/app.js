@@ -1,7 +1,7 @@
 // to create a server
 
 const express = require("express") 
-const noteModel = require(".models/note.model")
+const noteModel = require("./models/note.model")
 
 const app = express()
 
@@ -15,8 +15,7 @@ DELETE /notes/:id = Delte a note
 PATCH /notes/:id = Update a note
 */
 
-app.post("notes",(req,res)=>{
-
+app.post("/notes", async(req,res)=>{
     const data = req.body  // title + description
     await noteModel.create({
         title : data.title,
@@ -24,6 +23,40 @@ app.post("notes",(req,res)=>{
     })
     res.status(201).json({
         message : "Note created"
+    })
+})
+
+app.get('/notes', async(req,res)=>{
+    const notes = await noteModel.find()         
+    /*
+    find = [{},{},{}]
+    findOne = {} or null
+    */
+    res.status(200).json({
+        message : "Notes fetched successfully",
+        notes : notes
+    })
+});
+
+
+app.delete("/notes/:id", async(req,res)=>{
+    const id = req.params.id
+    await noteModel.findOneAndDelete({
+        _id : id
+    })
+    res.status(200).json({
+        message : "Note deleted successfully"
+    })
+})
+
+
+app.patch('/notes/:id', async(req,res)=>{
+    console.log("PATCH route hit");
+    const id = req.params.id
+    const description = req.body.description
+    await noteModel.findOneAndUpdate({_id: id},{description: description})
+    res.status(200).json({
+        message : "Note updated successfully"
     })
 })
 
@@ -52,10 +85,14 @@ const notes = {
 
 */
 
-const notes = []
+//const notes = []                  //this is to store data in array through api
 
 /* title, description */
-/* POST - /notes */
+// POST - /notes 
+/** 
+ 
+  
+  
 app.post('/notes', (req,res)=>{
     notes.push(req.body)
 
@@ -64,7 +101,7 @@ app.post('/notes', (req,res)=>{
     })
 })
 
-/* GET - /notes */
+// GET - /notes 
 app.get('/notes', (req,res) => {
     res.status(200).json({
         message : "notes fetched successfully",
@@ -72,7 +109,7 @@ app.get('/notes', (req,res) => {
     })
 })
 
-/* DELETE - /notes/1(index) 1 is the index from notes[] array */
+// DELETE - /notes/1(index) 1 is the index from notes[] array 
 app.delete('/notes/:index',(req,res)=>{
     console.log("deleted api")
     const index = req.params.index  //index = 1 as per the comment above
@@ -82,7 +119,7 @@ app.delete('/notes/:index',(req,res)=>{
     })      
 })
 
-/* PATCH - /notes/index */
+// PATCH - /notes/index 
 app.patch('/notes/:index',(req,res)=>{
     const index = req.params.index
     const description = req.body.description
@@ -90,6 +127,8 @@ app.patch('/notes/:index',(req,res)=>{
     res.status(200).json({
         message : "note updated succesfully"
     })
-})*/
+})
+
+*/
 
 module.exports = app
